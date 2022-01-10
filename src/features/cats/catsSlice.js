@@ -1,12 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Action Creators
-
 // async actions
-export const fetchCats = createAsyncThunk("cats/fetchCats", () => {
-  return fetch("https://learn-co-curriculum.github.io/cat-api/cats.json")
-    .then((res) => res.json())
-    .then((data) => data.images);
+export const fetchCats = createAsyncThunk("cats/fetchCats", async () => {
+  const res = await fetch("https://learn-co-curriculum.github.io/cat-api/cats.json");
+  const data = await res.json();
+  return data.images;
 });
 
 // Reducer
@@ -26,14 +24,14 @@ const catsSlice = createSlice({
       const cat = state.entities.find((cat) => cat.id === action.payload.id);
       cat.url = action.payload.url;
     },
-    extraReducers: {
-      [fetchCats.pending](state) {
-        state.status = "loading";
-      },
-      [fetchCats.fulfilled](state, action) {
-        state.entities = action.payload;
-        state.status = "idle";
-      },
+  },
+  extraReducers: {
+    [fetchCats.pending](state) {
+      state.status = "loading";
+    },
+    [fetchCats.fulfilled](state, action) {
+      state.entities = action.payload;
+      state.status = "idle";
     },
   },
 });
